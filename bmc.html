@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Business Model Canvas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #F3F4F1;
+    --ink: #1C231D;
+    --ink-soft: #5B655D;
+    --card: #FFFFFF;
+    --card-border: #DADFD8;
+    --green: #154734;   /* Cal Poly green */
+    --gold: #C69214;    /* Cal Poly gold */
+    --slate: #3E4A50;
+    --sans: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+    --serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  }
+  *{ box-sizing: border-box; }
+  html,body{ height:100%; }
+  body{
+    margin:0;
+    font-family: var(--sans);
+    color: var(--ink);
+    background-color: var(--paper);
+    background-image:
+      linear-gradient(var(--card-border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--card-border) 1px, transparent 1px);
+    background-size: 28px 28px;
+    background-position: -1px -1px;
+    min-height: 100vh;
+  }
+  .wrap{ max-width: 1400px; margin: 0 auto; padding: 20px 20px 60px; }
+  .brandbar{ display:flex; align-items:center; gap:10px; margin-bottom: 16px; }
+  .brandbar .swatch{ width:10px; height: 28px; background: var(--green); border-radius: 2px; }
+  .brandbar .swatch.gold{ background: var(--gold); }
+  .brandbar h1{ font-size: 18px; margin:0; font-weight:700; letter-spacing:.2px; }
+  .brandbar .tag{ font-size: 12px; color: var(--ink-soft); margin-left: 4px; }
+
+  .toolbar{
+    display:flex; flex-wrap: wrap; align-items:center; gap: 10px 14px;
+    background: var(--card); border: 1px solid var(--card-border); border-radius: 10px;
+    padding: 12px 16px; margin-bottom: 18px;
+  }
+  .toolbar select, .toolbar button, .toolbar .file-btn{
+    font-family: var(--sans); font-size: 13.5px; border-radius: 7px;
+    border: 1px solid var(--card-border); background: var(--card); color: var(--ink);
+    padding: 7px 12px; cursor: pointer;
+  }
+  .toolbar select{ min-width: 180px; }
+  .toolbar button:hover, .toolbar .file-btn:hover{ border-color: var(--green); color: var(--green); }
+  .toolbar button.primary{ background: var(--green); color: #fff; border-color: var(--green); }
+  .toolbar button.primary:hover{ opacity: .92; color:#fff; }
+  .toolbar button.danger:hover{ border-color: #A24936; color: #A24936; }
+  .toolbar .divider{ width:1px; align-self: stretch; background: var(--card-border); margin: 0 2px; }
+  .toolbar .spacer{ flex: 1; }
+  .status{ font-size: 12.5px; color: var(--ink-soft); white-space: nowrap; }
+  input[type=file]{ display:none; }
+
+  .canvas-head{ margin-bottom: 16px; }
+  .canvas-head input{ font-family: var(--sans); border: none; background: transparent; color: var(--ink); width:100%; padding: 4px 2px; }
+  .canvas-head input:focus{ outline: none; border-bottom: 2px solid var(--gold); }
+  #canvasTitle{ font-size: 30px; font-weight: 700; }
+  #canvasSubtitle{ font-size: 14px; color: var(--ink-soft); margin-top: 2px; }
+
+  .canvas-grid{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: minmax(180px, auto) minmax(180px, auto) minmax(140px, auto);
+    gap: 12px;
+    grid-template-areas:
+      "partners activities valueprop relationships segments"
+      "partners resources  valueprop channels      segments"
+      "cost     cost       cost      revenue        revenue";
+  }
+  .block{
+    background: var(--card); border: 1px solid var(--card-border); border-left: 4px solid var(--green);
+    border-radius: 8px; padding: 12px 14px 10px; display: flex; flex-direction: column; min-height: 0;
+  }
+  .block.accent-gold{ border-left-color: var(--gold); }
+  .block.accent-slate{ border-left-color: var(--slate); }
+  .block h2{ font-family: var(--sans); font-size: 13.5px; font-weight: 600; margin: 0 0 8px; color: var(--ink); }
+  .block textarea{
+    flex: 1; width: 100%; resize: none; border: none; background: transparent;
+    font-family: var(--serif); font-size: 15px; line-height: 1.5; color: var(--ink); padding: 0;
+  }
+  .block textarea:focus{ outline: none; }
+  .block textarea::placeholder{ color: #9AA69E; font-style: italic; }
+
+  #partners{grid-area:partners;} #activities{grid-area:activities;} #resources{grid-area:resources;}
+  #valueprop{grid-area:valueprop;} #relationships{grid-area:relationships;} #channels{grid-area:channels;}
+  #segments{grid-area:segments;} #cost{grid-area:cost;} #revenue{grid-area:revenue;}
+
+  footer{ margin-top: 22px; font-size: 11.5px; color: var(--ink-soft); text-align: center; }
+
+  @media (max-width: 900px){
+    .canvas-grid{ grid-template-columns: 1fr; grid-template-areas:
+      "partners" "activities" "resources" "valueprop"
+      "relationships" "channels" "segments" "cost" "revenue"; }
+    .block{ min-height: 140px; }
+  }
+  @media print{
+    @page{ size: landscape; margin: 10mm; }
+    body{ background: #fff; }
+    .toolbar, .brandbar{ display: none; }
+    .canvas-grid{ grid-template-rows: 190px 190px 140px; }
+    .block{ break-inside: avoid; }
+    footer{ margin-top: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="brandbar">
+    <div class="swatch"></div><div class="swatch gold"></div>
+    <h1>Business Model Canvas</h1>
+    <span class="tag">JOUR 3385 · Media Innovation &amp; Entrepreneurship</span>
+  </div>
+
+  <div class="toolbar">
+    <select id="canvasSelect" title="Switch canvas"></select>
+    <button id="btnNew">New canvas</button>
+    <button id="btnRename">Rename</button>
+    <button id="btnDelete" class="danger">Delete</button>
+    <div class="divider"></div>
+    <button id="btnExportJson">Export .json</button>
+    <label class="file-btn">Import .json<input type="file" id="importFile" accept="application/json"></label>
+    <button id="btnPrint">Export PDF (print)</button>
+    <div class="spacer"></div>
+    <span class="status" id="status">All changes save automatically</span>
+  </div>
+
+  <div class="canvas-head">
+    <input id="canvasTitle" placeholder="Untitled canvas" />
+    <input id="canvasSubtitle" placeholder="Team or course name" />
+  </div>
+
+  <div class="canvas-grid">
+    <div class="block" id="partners">
+      <h2>Key partners</h2>
+      <textarea data-field="partners" placeholder="Who are your key partners and suppliers? Which resources do they provide?"></textarea>
+    </div>
+    <div class="block" id="activities">
+      <h2>Key activities</h2>
+      <textarea data-field="activities" placeholder="What key activities does your value proposition require?"></textarea>
+    </div>
+    <div class="block" id="resources">
+      <h2>Key resources</h2>
+      <textarea data-field="resources" placeholder="What key resources does your value proposition require?"></textarea>
+    </div>
+    <div class="block accent-gold" id="valueprop">
+      <h2>Value propositions</h2>
+      <textarea data-field="valueprop" placeholder="What value do you deliver? Which customer problem do you solve?"></textarea>
+    </div>
+    <div class="block" id="relationships">
+      <h2>Customer relationships</h2>
+      <textarea data-field="relationships" placeholder="What type of relationship does each customer segment expect?"></textarea>
+    </div>
+    <div class="block" id="channels">
+      <h2>Channels</h2>
+      <textarea data-field="channels" placeholder="Through which channels do you reach and deliver to customers?"></textarea>
+    </div>
+    <div class="block" id="segments">
+      <h2>Customer segments</h2>
+      <textarea data-field="segments" placeholder="For whom are you creating value? Who are your most important customers?"></textarea>
+    </div>
+    <div class="block accent-slate" id="cost">
+      <h2>Cost structure</h2>
+      <textarea data-field="cost" placeholder="What are the most important costs inherent in your business model?"></textarea>
+    </div>
+    <div class="block accent-slate" id="revenue">
+      <h2>Revenue streams</h2>
+      <textarea data-field="revenue" placeholder="For what value are customers willing to pay? How do they pay?"></textarea>
+    </div>
+  </div>
+
+  <footer>
+    Business Model Canvas concept by Strategyzer AG (Alexander Osterwalder &amp; Yves Pigneur), licensed CC BY-SA 3.0.
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var STORE_KEY = 'bmc_canvases_v1';
+  var CURRENT_KEY = 'bmc_current_canvas_v1';
+  var FIELDS = ['partners','activities','resources','valueprop','relationships','channels','segments','cost','revenue'];
+
+  function loadAll(){
+    try{
+      var raw = localStorage.getItem(STORE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    }catch(e){ return {}; }
+  }
+  function saveAll(all){ localStorage.setItem(STORE_KEY, JSON.stringify(all)); }
+  function blankCanvas(){
+    var c = { title:'', subtitle:'', updatedAt: Date.now(), blocks:{} };
+    FIELDS.forEach(function(f){ c.blocks[f] = ''; });
+    return c;
+  }
+  function uniqueName(all, base){
+    var name = base, n = 2;
+    while(all.hasOwnProperty(name)){ name = base + ' (' + n + ')'; n++; }
+    return name;
+  }
+
+  var all = loadAll();
+  var current = localStorage.getItem(CURRENT_KEY);
+  if(!current || !all[current]){
+    if(Object.keys(all).length === 0){ all['Untitled canvas'] = blankCanvas(); }
+    current = Object.keys(all)[0];
+  }
+
+  var els = {
+    select: document.getElementById('canvasSelect'),
+    title: document.getElementById('canvasTitle'),
+    subtitle: document.getElementById('canvasSubtitle'),
+    status: document.getElementById('status')
+  };
+  var textareas = {};
+  FIELDS.forEach(function(f){ textareas[f] = document.querySelector('textarea[data-field="'+f+'"]'); });
+
+  function refreshSelect(){
+    els.select.innerHTML = '';
+    Object.keys(all).sort().forEach(function(name){
+      var opt = document.createElement('option');
+      opt.value = name; opt.textContent = name;
+      if(name === current) opt.selected = true;
+      els.select.appendChild(opt);
+    });
+  }
+
+  function renderCurrent(){
+    var c = all[current];
+    els.title.value = c.title || '';
+    els.subtitle.value = c.subtitle || '';
+    FIELDS.forEach(function(f){ textareas[f].value = (c.blocks && c.blocks[f]) || ''; });
+  }
+
+  var saveTimer = null;
+  function scheduleSave(){
+    els.status.textContent = 'Saving…';
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function(){
+      var c = all[current];
+      c.title = els.title.value;
+      c.subtitle = els.subtitle.value;
+      c.blocks = c.blocks || {};
+      FIELDS.forEach(function(f){ c.blocks[f] = textareas[f].value; });
+      c.updatedAt = Date.now();
+      saveAll(all);
+      localStorage.setItem(CURRENT_KEY, current);
+      els.status.textContent = 'Saved ' + new Date(c.updatedAt).toLocaleTimeString();
+    }, 400);
+  }
+
+  [els.title, els.subtitle].forEach(function(el){ el.addEventListener('input', scheduleSave); });
+  FIELDS.forEach(function(f){ textareas[f].addEventListener('input', scheduleSave); });
+
+  els.select.addEventListener('change', function(){
+    current = els.select.value;
+    localStorage.setItem(CURRENT_KEY, current);
+    renderCurrent();
+  });
+
+  document.getElementById('btnNew').addEventListener('click', function(){
+    var name = prompt('Name for the new canvas:', 'Untitled canvas');
+    if(!name) return;
+    name = uniqueName(all, name.trim() || 'Untitled canvas');
+    all[name] = blankCanvas();
+    current = name;
+    saveAll(all);
+    localStorage.setItem(CURRENT_KEY, current);
+    refreshSelect();
+    renderCurrent();
+  });
+
+  document.getElementById('btnRename').addEventListener('click', function(){
+    var name = prompt('Rename this canvas:', current);
+    if(!name || name.trim() === '' || name === current) return;
+    name = uniqueName(all, name.trim());
+    all[name] = all[current];
+    delete all[current];
+    current = name;
+    saveAll(all);
+    localStorage.setItem(CURRENT_KEY, current);
+    refreshSelect();
+    renderCurrent();
+  });
+
+  document.getElementById('btnDelete').addEventListener('click', function(){
+    if(Object.keys(all).length <= 1){
+      alert('Keep at least one canvas — create a new one before deleting this.');
+      return;
+    }
+    if(!confirm('Delete "' + current + '"? This cannot be undone.')) return;
+    delete all[current];
+    current = Object.keys(all)[0];
+    saveAll(all);
+    localStorage.setItem(CURRENT_KEY, current);
+    refreshSelect();
+    renderCurrent();
+  });
+
+  document.getElementById('btnExportJson').addEventListener('click', function(){
+    var c = all[current];
+    var blob = new Blob([JSON.stringify({ name: current, canvas: c }, null, 2)], {type:'application/json'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = (current || 'business-model-canvas').replace(/[^a-z0-9\-_ ]/gi,'').trim() + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('importFile').addEventListener('change', function(e){
+    var file = e.target.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(evt){
+      try{
+        var data = JSON.parse(evt.target.result);
+        var name = uniqueName(all, (data.name || 'Imported canvas'));
+        var c = blankCanvas();
+        c.title = (data.canvas && data.canvas.title) || '';
+        c.subtitle = (data.canvas && data.canvas.subtitle) || '';
+        FIELDS.forEach(function(f){
+          c.blocks[f] = (data.canvas && data.canvas.blocks && data.canvas.blocks[f]) || '';
+        });
+        all[name] = c;
+        current = name;
+        saveAll(all);
+        localStorage.setItem(CURRENT_KEY, current);
+        refreshSelect();
+        renderCurrent();
+      }catch(err){
+        alert('That file could not be read as a canvas export.');
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  });
+
+  document.getElementById('btnPrint').addEventListener('click', function(){
+    window.print();
+  });
+
+  refreshSelect();
+  renderCurrent();
+})();
+</script>
+
+</body>
+</html>
